@@ -1,16 +1,141 @@
-<div class="container my-5">
+<div class="container my-3">
     <div class="row">
-        <div class="col-md-6 offset-md-3">
+        <div class="col-md-10 offset-md-1">
+            <!-- formgroup syncs the ts form here -->
             <form [formGroup]="signUpForm"
                 (ngSubmit)="onSignUp()">
                 <div class="form-group">
                     <label for="userName"><strong>User Name</strong><sup>*</sup></label>
                     <input type="text" class="form-control" formControlName="userName">
+
+                    <strong class="text-danger" *ngIf="userName.touched && userName.hasError('required')">
+                        Username is an required field !!!
+                    </strong>
+
+                    <ng-container *ngIf="userName.dirty">
+                        <strong class="text-danger" *ngIf="userName.hasError('minlength')">
+                             Minimum length must be 
+                            {{userName.errors?.['minlength'].requiredLength}}
+                            & the actual length is {{userName.errors?.['minlength'].actualLength}}
+                        </strong>
+                        <strong class="text-danger" *ngIf="userName.hasError('maxlength')">
+                            Maximum length must be {{userName.errors?.['maxlength'].requiredLength}} 
+                            & the actual length is {{userName.errors?.['maxlength'].actualLength}}
+                        </strong>
+
+                        <strong class="text-danger" *ngIf="userName.hasError('pattern')">
+                            Use letters only , no numbers nor special characters here !!!
+                        </strong>
+
+                        <strong class="text-danger" *ngIf="formControls['userName'].hasError('noSpaceBar')">
+                            {{formControls['userName'].errors?.['noSpaceBar']}}
+                        </strong>
+
+                    </ng-container>
+
                 </div>
                 <div class="form-group">
                     <label for="email"><strong>Email</strong><sup>*</sup></label>
                     <input type="text" class="form-control" formControlName="email">
+
+                    <ng-container *ngIf="formControls['email'].touched">
+                        <strong class="text-danger" *ngIf="formControls['email'].hasError('required')">
+                            Email is an required field !!!
+                        </strong>
+                    </ng-container>
+                    <strong class="text-danger" *ngIf="formControls['email'].dirty && formControls['email'].hasError('pattern')">
+                        Please enter proper pattern of Email !!!
+                    </strong>
                 </div>
+
+                <div class="form-group">
+                    <label for="empId"><strong>EmpId</strong></label>
+                    <input 
+                    placeholder="E123"
+                    formControlName="empId"
+                    type="text" class="form-control">
+
+                    <strong class="text-danger" *ngIf="formControls['empId'].dirty  && formControls['empId'].hasError('inValidEmpId')">
+                        {{formControls['empId'].errors?.['inValidEmpId']}}
+                    </strong>
+                </div>
+
+                <div class="form-group">
+                    <label for="aadharNo"><strong>Aadhar Number</strong></label>
+                    <input 
+                    placeholder="xxxx xxxx xxxx"
+                    formControlName="aadharNo"
+                    type="text" class="form-control">
+
+                    <strong class="text-danger" *ngIf="formControls['aadharNo'].touched && formControls['aadharNo'].hasError('required')">
+                        Aadhar No is an required field !!!
+                    </strong>
+
+                    <strong class="text-danger" *ngIf="formControls['aadharNo'].dirty && formControls['aadharNo'].hasError('invalidAadhar')">
+                        {{formControls['aadharNo'].errors?.['invalidAadhar']}}
+                    </strong>
+
+                    <strong class="text-danger" *ngIf="formControls['aadharNo'].dirty && formControls['aadharNo'].hasError('maxlength')">
+                        MaxLength should be 12 !!!
+                    </strong>
+
+                </div>
+
+                <div class="form-group">
+                    <label for="panNo"><strong>Pan Number</strong></label>
+                    <input 
+                    formControlName="panNo"
+                    placeholder="xxxxxxxxxx"
+                    type="text" class="form-control">
+
+                    <strong class="text-danger" *ngIf="formControls['panNo'].touched && formControls['panNo'].hasError('required')">
+                        Pan no. is an required field !!!
+                    </strong>
+
+                    <ng-container *ngIf="formControls['panNo'].dirty">
+                        <strong class="text-danger" *ngIf="formControls['panNo'].hasError('inValidPan')">
+                            {{formControls['panNo'].errors?.['inValidPan']}}
+                        </strong>
+
+                        <strong class="text-danger" *ngIf="formControls['panNo'].hasError('maxlength')">
+                            MaxLength must be 10 !!!
+                        </strong>
+                    </ng-container>
+                </div>
+
+                
+                <h3 class="mb-2"><strong>Gender</strong></h3>
+                <div class="form-group">
+                    <label [for]="gen" *ngFor="let gen of gendersArr">
+                        <input formControlName="gender"
+                          required
+                          type="radio"
+                          [value]="gen" 
+                          [id]="gen">
+                          {{gen}}
+                    </label>
+                </div>
+
+                <h3 class="mb-2"><strong>Skills</strong></h3>
+                <div formArrayName="skills">
+                    <div class="row mb-3" *ngFor="let skill of skillsArr.controls; let i = index;">
+                        <div class="col-md-10">
+                            <input 
+                            [formControlName]="i"
+                            type="text" class="form-control">
+                        </div>
+                        <div class="col-md-2" *ngIf="i > 0">
+                            <button (click)="onSkillRemove(i)" type="button" mat-stroked-button color="warn">Remove</button>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col">
+                            <button [disabled]="skillsArr.invalid" (click)="onSkillAdd()" type="button" mat-raised-button color="primary">Add Skills</button>
+                        </div>
+                    </div>
+                </div>
+
                 <button type="submit" mat-raised-button color="accent" class="btn-block">Sign Up</button>
             </form>
         </div>
